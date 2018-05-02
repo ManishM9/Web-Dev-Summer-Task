@@ -1,0 +1,19 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "Web Dev Summer Task",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ManishM9/Web-Dev-Summer-Task.git"
+  },
+  "author": "Manish M",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ManishM9/Web-Dev-Summer-Task/issues"
+  },
+  "homepage": "https://github.com/ManishM9/Web-Dev-Summer-Task#readme"
+}
