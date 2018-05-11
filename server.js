@@ -38,7 +38,7 @@ app.get("/", function(req,res){
     
     if(username !== undefined && authorised === true){
         
-        res.redirect("/landing");
+        res.redirect("/home");
         
     } else {
         
@@ -49,6 +49,9 @@ app.get("/", function(req,res){
     
 });
 
+app.get("/login", function(req,res){
+    res.redirect("/");
+});
 
 app.post("/login", function(req,res){
     
@@ -73,7 +76,7 @@ app.post("/login", function(req,res){
                 if(val.Password === password_entered){
                     req.session.authorised = true;
                     req.session.username = username_entered;
-                    res.redirect("/landing");
+                    res.redirect("/home");
                 } else {
                     res.render("login",{disp:"Incorrect Username Or Password"});
                 }
@@ -89,7 +92,36 @@ app.post("/login", function(req,res){
 });
 
 
+app.get("/home", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    
+    if(username !== undefined && authorised === true){
+        
+        res.render("home");
+        
+    } else {
+        res.redirect("/");
+    }
+    
+    
+});
 
+
+app.get("/task1", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    if( username !== undefined && authorised === true){
+        res.render("taskupload");
+    } else {
+        res.redirect("/");
+    }
+    
+});
 
 
 
