@@ -135,7 +135,7 @@ app.get("/task1", function(req, res) {
         
         storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix: ""}).then(results =>{
             const file = results[0];
-            console.log(file);
+            // console.log(file);
             
             var flag = false;
             file.forEach(fil =>{
@@ -179,7 +179,7 @@ app.post("/task1", function(req,res){
         
         storage.bucket("web-dev-summer-task.appspot.com").getFiles().then(results =>{
             const file = results[0];
-            console.log(file);
+            // console.log(file);
             var filename;
             var flag = false;
             file.forEach(fil =>{
