@@ -177,25 +177,25 @@ app.post("/task1", function(req,res){
     if( username !== undefined && authorised === true){
         
         
-        storage.bucket("web-dev-summer-task.appspot.com").getFiles().then(results =>{
-            const file = results[0];
-            console.log(file);
-            var filename;
-            var flag = false;
-            file.forEach(fil =>{
-                console.log(fil);
-                if(fil.name.includes(username+"_task1")){
-                    flag = true;
-                    filename = fil.name;
-                    storage.bucket("web-dev-summer-task.appspot.com").file(fil.name).delete().then(() =>{
-                        console.log("File deleted");
-                    }).catch(err =>{
-                        console.log("Error deleting file:"+err);
-                    });
-                }
-            });
+        // storage.bucket("web-dev-summer-task.appspot.com").getFiles().then(results =>{
+        //     const file = results[0];
+        //     console.log(file);
+        //     var filename;
+        //     var flag = false;
+        //     file.forEach(fil =>{
+        //         console.log(fil);
+        //         if(fil.name.includes(username+"_task1")){
+        //             flag = true;
+        //             filename = fil.name;
+        //             storage.bucket("web-dev-summer-task.appspot.com").file(fil.name).delete().then(() =>{
+        //                 console.log("File deleted");
+        //             }).catch(err =>{
+        //                 console.log("Error deleting file:"+err);
+        //             });
+        //         }
+        //     });
             
-        });
+        // });
         
         
         
