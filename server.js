@@ -204,23 +204,24 @@ app.post("/task1", function(req,res){
         var file_name_only = username+"_task1."+extension;
         var file_name = "./TempStorage/"+username+"_task1."+extension;
         console.log(file_name);
-        curr_file.mv("TempStorage/"+username+"_task1."+extension, function(err){
+        curr_file.mv("./TempStorage/"+username+"_task1."+extension, function(err){
             if(err){
                 console.log("Error in moving file "+ file_name+":"+err);
             } else {
+                res.redirect("/task1");
                 console.log(file_name_only);
                 storage.bucket("web-dev-summer-task.appspot.com").upload(file_name, {destination: "Task1/"+file_name_only}).then(() =>{
                     console.log("Uploaded:"+file_name_only);
                     fs.unlink(file_name, function(err){
                         if(err) throw err;
-                        res.redirect("/task1");
+                        // res.redirect("/task1");
                         // console.log("Unlinking Error:"+err);
                     });
                 }).catch(err =>{
                     console.log(err);
                     fs.unlink(file_name, function(err){
                         if(err) throw err;
-                        res.redirect("/task1");
+                        // res.redirect("/task1");
                         // console.log("Unlinking Error:"+err);
                     });
                 });
