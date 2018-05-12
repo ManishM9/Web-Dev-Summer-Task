@@ -24,6 +24,18 @@ app.use(session({
     username: ""
 }));
 
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./assets/web-dev-summer-task-firebase-adminsdk-x189t-321e34054b.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://web-dev-summer-task.firebaseio.com"
+});
+
+var storage = admin.storage();
+
 app.set("view engine", "ejs");
 
 app.use(express.static(__dirname + "/assets"));
@@ -123,6 +135,38 @@ app.get("/task1", function(req, res) {
     
 });
 
+storage.bucket("web-dev-summer-task.appspot.com").getFiles().then(results => {
+            const files = results[0];
+            
+            console.log("files:");
+            files.forEach(file => {
+                console.log(file.name);
+            });
+        }).catch(err =>{
+            console.log(err);
+        });
+
+app.post("/task1", function(req,res){
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    if( username !== undefined && authorised === true){
+        
+        storage.bucket().getFiles().then(results => {
+            const files = results[0];
+            
+            console.log("files:");
+            files.forEach(file => {
+                console.log(file.name);
+            });
+        }).catch(err =>{
+            console.log(err);
+        });
+        
+    }
+    
+});
 
 
 
