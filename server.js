@@ -204,7 +204,7 @@ app.post("/task1", function(req,res){
         var file_name_only = username+"_task1."+extension;
         var file_name = "./TempStorage/"+username+"_task1."+extension;
         console.log(file_name);
-        curr_file.mv("./TempStorage/"+username+"_task1."+extension, function(err){
+        curr_file.mv("/TempStorage/"+username+"_task1."+extension, function(err){
             if(err){
                 console.log("Error in moving file "+ file_name+":"+err);
             } else {
