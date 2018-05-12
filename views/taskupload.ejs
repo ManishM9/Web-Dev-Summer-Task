@@ -29,6 +29,13 @@
             </div>
             <div class="" style="background:transparent;">
                 
+                <p>Hello, <%= username %></p>
+                
+                <% if(disp){ %>
+                    <p>You have already uploaded the document, click <a href="task1/download">here</a> to download.</p>
+                <% } %>
+                
+                
                 <form action="/task1" method="POST" encType="multipart/form-data">
                     
                     <label>Upload File:</label>
