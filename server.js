@@ -289,6 +289,75 @@ app.get("/task1/download", function(req, res) {
 });
 
 
+app.get("/account", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    
+    if(username !== undefined && authorised === true){
+        
+        res.render("account", {disp: ""});
+        
+    } else {
+        res.redirect("/");
+    }
+    
+});
+
+app.post("/pchange", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    
+    if(username !== undefined && authorised === true){
+        
+        var curr_pass = reqb.curr_pass;
+        var new_pass1 = reqb.new_pass1;
+        var new_pass2 = reqb.new_pass2;
+        
+        db.ref("/members/"+username).once("value", function(snapshot){
+            var val = snapshot.val();
+            
+            if(val === null){
+                req.session.destroy();
+                res.send("HACKER!!!!");
+            } else {
+                
+                if(val.Password === curr_pass){
+                    
+                    if(new_pass1 === new_pass2){
+                        
+                        db.ref("/members/"+username).update({Password: new_pass1}).then(() =>{
+                            req.session.destroy();
+                            res.send("Password Changed");
+                        });
+                        
+                    } else {
+                        res.render("account", {disp: "Confirmation failed due to different new Passwords"});
+                    }
+                    
+                } else {
+                    res.render("account", {disp: "Invalid current password"});
+                }
+                
+            }
+        });
+        
+    } else {
+        res.redirect("/");
+    }
+    
+});
+
+
+
+
+app.get("/logout", function(req, res) {
+    req.session.destroy();
+    res.redirect("/");
+});
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Server Started");
