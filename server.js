@@ -23,7 +23,9 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     authorised: false,
-    username: ""
+    username: "",
+    email: "",
+    year: 0
 }));
 
 
@@ -92,6 +94,8 @@ app.post("/login", function(req,res){
                 if(val.Password === password_entered){
                     req.session.authorised = true;
                     req.session.username = username_entered;
+                    req.session.email = val.Email;
+                    req.session.year = val.Year;
                     res.redirect("/home");
                 } else {
                     res.render("login",{disp:"Incorrect Username Or Password"});
@@ -294,10 +298,12 @@ app.get("/account", function(req, res) {
     var reqb = req.body;
     var username = req.session.username;
     var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
     
     if(username !== undefined && authorised === true){
         
-        res.render("account", {disp: ""});
+        res.render("account", {disp: "", username: username, email:email, year:year});
         
     } else {
         res.redirect("/");
@@ -310,6 +316,8 @@ app.post("/pchange", function(req, res) {
     var reqb = req.body;
     var username = req.session.username;
     var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
     
     if(username !== undefined && authorised === true){
         
@@ -335,11 +343,11 @@ app.post("/pchange", function(req, res) {
                         });
                         
                     } else {
-                        res.render("account", {disp: "Confirmation failed due to different new Passwords"});
+                        res.render("account", {disp: "Confirmation failed due to different new Passwords", username: username, email:email, year:year});
                     }
                     
                 } else {
-                    res.render("account", {disp: "Invalid current password"});
+                    res.render("account", {disp: "Invalid current password", username: username, email:email, year:year});
                 }
                 
             }
