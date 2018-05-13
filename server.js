@@ -264,9 +264,9 @@ app.get("/task1/download", function(req, res) {
             });
             if(flag){
                 var extension = filename.split(".")[1];
-                storage.bucket("web-dev-summer-task.appspot.com").file(filename).download({destination: "./assets/files/"+username+"_task1."+extension}).then(() =>{
+                storage.bucket("web-dev-summer-task.appspot.com").file(filename).download({destination: "assets/files/"+username+"_task1."+extension}).then(() =>{
                     
-                    res.redirect("assets/files/"+username+"_task1."+extension);
+                    res.redirect("/files/"+username+"_task1."+extension);
                     
                     setTimeout(function(){
                         fs.unlink("./assets/files/"+username+"_task1."+extension, function(err) {
