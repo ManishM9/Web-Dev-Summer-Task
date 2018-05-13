@@ -25,7 +25,8 @@ app.use(session({
     authorised: false,
     username: "",
     email: "",
-    year: 0
+    year: 0,
+    admin: false
 }));
 
 
@@ -96,6 +97,7 @@ app.post("/login", function(req,res){
                     req.session.username = username_entered;
                     req.session.email = val.Email;
                     req.session.year = val.Year;
+                    req.session.admin = val.Admin;
                     res.redirect("/home");
                 } else {
                     res.render("login",{disp:"Incorrect Username Or Password"});
@@ -135,7 +137,10 @@ app.get("/task1", function(req, res) {
     var reqb = req.body;
     var username = req.session.username;
     var authorised = req.session.authorised;
-    if( username !== undefined && authorised === true){
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    if( username !== undefined && authorised === true && admin === undefined){
         
         storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix: ""}).then(results =>{
             const file = results[0];
@@ -155,6 +160,10 @@ app.get("/task1", function(req, res) {
             }
             
         });
+        
+    } else if( username !== undefined && authorised === true && admin === true){
+        
+        res.render("taskprogress");
         
     } else {
         res.redirect("/");
