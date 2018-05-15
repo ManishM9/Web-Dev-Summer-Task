@@ -59,8 +59,13 @@
             
             <div class="" style="background:transparent;">
                 
+                <h3>Uploaded Files:</h3>
                 
-                
+                <ul>
+                <% upload_details.forEach(function(file_name){ %>
+                    <li> <a href="/task1/<%= file_name %>"> <%= file_name %> </a> </li>
+                <% }); %>
+                </ul>
                 
             </div>
         </div>

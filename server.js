@@ -163,7 +163,30 @@ app.get("/task1", function(req, res) {
         
     } else if( username !== undefined && authorised === true && admin === true){
         
-        res.render("taskprogress");
+        var upload_details = [];
+        
+        storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix: "Task1/"}).then(results =>{
+            var files = results[0];
+            // console.log(files);
+            
+            files.forEach(file =>{
+                var temp_name = file.name.split("/")[1];
+                if(temp_name !== undefined && temp_name !== ""){
+                    upload_details.push(temp_name);
+                }
+                // console.log(file.name.split("/")[1]);
+                
+            });
+            
+            // console.log(upload_details);
+            
+            res.render("taskprogress", {upload_details:upload_details});
+            
+        }).catch(err =>{
+            if(err) throw err;
+        });
+        
+        // res.render("taskprogress");
         
     } else {
         res.redirect("/");
@@ -285,7 +308,7 @@ app.get("/task1/download", function(req, res) {
                         fs.unlink("./assets/files/"+username+"_task1."+extension, function(err) {
                             if(err) throw err;
                         });
-                    }, 60000);
+                    }, 30000);
                     
                 }).catch(err =>{
                     if(err) throw err;
@@ -301,6 +324,35 @@ app.get("/task1/download", function(req, res) {
     
 });
 
+
+app.get("/task1/:doc_name", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    var doc_name = req.params.doc_name;
+    
+    if(username !== undefined && authorised === true && admin === true){
+        
+        storage.bucket("web-dev-summer-task.appspot.com").file("Task1/"+doc_name).download({destination: "assets/files/"+doc_name}).then(() =>{
+            res.redirect("/files/"+doc_name);
+            
+            setTimeout(() =>{
+                fs.unlink("assets/files/"+doc_name, function(err) {
+                    if(err) throw err;
+                });
+            }, 30000);
+        });
+        
+    } else {
+        res.redirect("/");
+    }
+    
+    
+});
 
 app.get("/account", function(req, res) {
     
