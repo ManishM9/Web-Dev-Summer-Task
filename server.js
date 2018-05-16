@@ -154,9 +154,9 @@ app.get("/task1", function(req, res) {
             });
             if(flag){
                 // res.render("taskupload", {disp:"You have already uploaded the document, click <a href=\"/download\">here</a> to download."})
-                res.render("taskupload", {username: username,disp: true});
+                res.render("taskupload", {username: username,disp: true, tno:1});
             } else {
-                res.render("taskupload", {username: username,disp: false});
+                res.render("taskupload", {username: username,disp: false, tno:1});
             }
             
         });
@@ -174,7 +174,7 @@ app.get("/task1", function(req, res) {
                 if(temp_name !== undefined && temp_name !== ""){
                     upload_details.push(temp_name);
                 }
-                // console.log(file.name.split("/")[1]);
+                console.log(file.name);
                 
             });
             
@@ -275,6 +275,8 @@ app.post("/task1", function(req,res){
         //     console.log(err);
         // });
         
+    } else {
+        res.redirect("/");
     }
     
 });
@@ -353,6 +355,148 @@ app.get("/task1/:doc_name", function(req, res) {
     
     
 });
+
+app.get("/task2", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    
+    if(username !== undefined && authorised === true && admin === undefined){
+        
+        storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix :"Task2/"}).then(results =>{
+            const files = results[0];
+            
+            var flag = false;
+            files.forEach(file =>{
+                if(file.name.includes(username+"_task2")){
+                    flag = true;
+                }
+            });
+            if(flag){
+                res.render("taskup", {username: username, disp: true, tno:2});
+            } else {
+                res.render("taskup", {username: username, disp: false, tno:2});
+            }
+        });
+        
+        
+    } else if(username !== undefined && authorised === true && admin === true){
+        res.send("Admin");
+    }
+    
+});
+
+
+app.post("/task2", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    
+    if(username !== undefined && authorised === true){
+        
+        storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix: "Task2/"}).then(results =>{
+            const files = results[0];
+            
+            var filename;
+            var flag = false;
+            files.forEach(file =>{
+                if(file.name.includes(username+"_task2")){
+                    flag = true;
+                    filename = fil.name;
+                    storage.bucket("web-dev-summer-task.appspot.com").file(file.name).delete().then(() =>{
+                        console.log("File deleted");
+                    }).catch(err =>{
+                        console.log("Error deleting file:"+err);
+                    });
+                }
+            });
+        });
+        
+        var curr_file = req.files.file_uploaded;
+        var extension = curr_file.name.split(".")[1];
+        var file_name_only = username+"_task2."+extension;
+        var file_name = "./TempStorage/"+username+"_task2."+extension;
+        
+        curr_file.mv("TempStorage/"+username+"_task2."+extension, function(err){
+            if(err){
+                console.log("Error in moving file "+file_name+": "+err);
+            } else {
+                console.log(file_name_only);
+                storage.bucket("web-dev-summer-task.appspot.com").upload(file_name, {destination: "Task2/"+file_name_only}).then(() =>{
+                    console.log("Uploaded:"+file_name_only);
+                    
+                    fs.unlink(file_name, function(err) {
+                        if(err) throw err;
+                        res.redirect("/task2");
+                    });
+                }).catch(err =>{
+                    console.log(err);
+                    fs.unlink(file_name, function(err) {
+                        if(err) throw err;
+                        res.redirect("/task2");
+                    });
+                });
+            }
+        });
+        
+    } else {
+        res.redirect("/");
+    }
+    
+});
+
+
+app.get("/task2/download", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    
+    if(username !== undefined && authorised === true){
+        
+        storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix: "Task2/"}).then(results =>{
+            const files = results[0];
+            
+            var filename;
+            var flag = false;
+            files.forEach(file =>{
+                if(file.name.includes(username+"_task2")){
+                    flag = true;
+                    filename = file.name;
+                }
+            });
+            if(flag){
+                var extension = filename.split(".")[1];
+                storage.bucket("web-dev-summer-task.appspot.com").file(filename).download({destination: "assets/files/"+username+"_task2."+extension}).then(() =>{
+                    res.redirect("/files/"+username+"_task2."+extension);
+                    
+                    setTimeout(function(){
+                        fs.unlink("./assets/files/"+username+"_task2."+extension, function(err) {
+                            if(err) throw err;
+                        });
+                    }, 30000);
+                }).catch(err =>{
+                    if(err) throw err;
+                });
+            }
+        });
+        
+    } else {
+        res.redirect("/");
+    }
+    
+});
+
 
 app.get("/account", function(req, res) {
     

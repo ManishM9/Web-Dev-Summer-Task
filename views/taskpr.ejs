@@ -19,12 +19,6 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     
-    <style>
-        @font-face{
-            font-family: "Rayando";
-            src: url("/rayando.ttf");
-        }
-    </style>
     
     <body style="background-image: url(http://www.bentleysofyork.com/images/comp_keyboard_gs.jpg); background-repeat:no-repeat; background-size:100% 100%; margin-bottom: 50px;">
         
@@ -62,27 +56,16 @@
             <div class="jumbotron" style="margin-top:0px;">
                 <center><h1>Web Dev Summer Task</h1></center>
             </div>
+            
             <div class="" style="background:transparent;">
                 
-                <p>Hello, <%= username %></p>
+                <h3>Uploaded Files:</h3>
                 
-                <center>
-                    <h3>Notice Board</h3>
-                </center>
-                    
-                <div style="background-image: url(img/notice_board.jpg); background-repeat:no-repeat; background-size:100% 100%; width:100%; height: 530px; font-family: Rayando; font-size: 30; color: blue;">
-                    <ul style="padding-top: 50px; padding-left: 80px;">
-                        <li><a href="docs/HTML_Mentor_DOC.docx">HTML: Task 1</a></li>
-                        <li><a href="/task1">Task 1 Upload</a></li>
-                        <li><a href="docs/CSS_Mentor_DOC.docx">CSS: Task 2</a></li>
-                        <li><a href="/task2">Task 2 Upload</a></li>
-                    </ul>
-                </div>
-                    
-                <div style="width:100%; height:500px;">
-                    <center><img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Comingsoon.png"></center>
-                </div>
-                
+                <ul>
+                <% upload_details.forEach(function(file_name){ %>
+                    <li> <a href="/task1/<%= file_name %>"> <%= file_name %> </a> </li>
+                <% }); %>
+                </ul>
                 
             </div>
         </div>
@@ -93,4 +76,4 @@
     </body>
     
     
-</html>
+</html>s
