@@ -366,7 +366,7 @@ app.get("/task2/:doc_name", function(req, res) {
     var admin = req.session.admin;
     var doc_name = req.params.doc_name;
     
-    if(username !== undefined && authorised === true && admin === undefined){
+    if(username !== undefined && authorised === true){
         storage.bucket("web-dev-summer-task.appspot.com").file("Task2/"+doc_name).download({destination: "assets/files/"+doc_name}).then(() =>{
             res.redirect("/files/"+doc_name);
             
