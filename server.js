@@ -356,31 +356,6 @@ app.get("/task1/:doc_name", function(req, res) {
     
 });
 
-app.get("/task2/:doc_name", function(req, res) {
-    
-    var reqb = req.body;
-    var username = req.session.username;
-    var authorised = req.session.authorised;
-    var email = req.session.email;
-    var year = req.session.year;
-    var admin = req.session.admin;
-    var doc_name = req.params.doc_name;
-    
-    if(username !== undefined && authorised === true){
-        storage.bucket("web-dev-summer-task.appspot.com").file("Task2/"+doc_name).download({destination: "assets/files/"+doc_name}).then(() =>{
-            res.redirect("/files/"+doc_name);
-            
-            setTimeout(function(){
-                fs.unlink("assets/files/"+doc_name, function(err) {
-                    if(err) throw err;
-                });
-            }, 30000);
-        });
-    } else {
-        res.redirect("/");
-    }
-    
-});
 
 app.get("/task2", function(req, res) {
     
@@ -535,6 +510,32 @@ app.get("/task2/download", function(req, res) {
             }
         });
         
+    } else {
+        res.redirect("/");
+    }
+    
+});
+
+app.get("/task2/:doc_name", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    var doc_name = req.params.doc_name;
+    
+    if(username !== undefined && authorised === true){
+        storage.bucket("web-dev-summer-task.appspot.com").file("Task2/"+doc_name).download({destination: "assets/files/"+doc_name}).then(() =>{
+            res.redirect("/files/"+doc_name);
+            
+            setTimeout(function(){
+                fs.unlink("assets/files/"+doc_name, function(err) {
+                    if(err) throw err;
+                });
+            }, 30000);
+        });
     } else {
         res.redirect("/");
     }
