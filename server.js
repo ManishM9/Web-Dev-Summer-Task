@@ -411,7 +411,25 @@ app.get("/task2", function(req, res) {
         
         
     } else if(username !== undefined && authorised === true && admin === true){
+        var upload_details = [];
         
+        storage.bucket("web-dev-summer-task.appspot.com").getFiles({prefix: "Task2/"}).then(results =>{
+            var files = results[0];
+            
+            files.forEach(file =>{
+                var temp_name = file.name.split("/")[1];
+                if(temp_name !== undefined && temp_name !== ""){
+                    upload_details.push(temp_name);
+                }
+                console.log(file.name);
+            });
+            
+            res.render("taskpr", {upload_details: upload_details, tno:2});
+        }).catch(err =>{
+            if(err) throw err;
+        });
+    } else {
+        res.redirect("/");
     }
     
 });
