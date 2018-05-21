@@ -62,8 +62,25 @@
                 <h3>Uploaded Files:</h3>
                 
                 <ul>
-                <% upload_details.forEach(function(file_name){ %>
-                    <li> <a href="/task1/<%= file_name %>"> <%= file_name %> </a> </li>
+                <% upload_details.forEach(function(file){ %>
+                    <li> <a href="/task1/<%= file.file_name %>"> <%= file.file_name %> </a> <label>Grade: <%= file.grade %>. Remarks: <%= file.remarks %></label> 
+                        <br>
+                        <form action="/grade/task1" method="POST">
+                            <input type="hidden" value="<%= file.file_name %>" name="username_given">
+                            <label>Grade:</label>
+                            <select name="grade_given">
+                                <option value="S">S</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="N">N</option>
+                            </select>
+                            <br>
+                            <label>Remarks:</label>
+                            <input type="text" name="remarks"/>
+                            <input type="submit" value="Submit"/>
+                        </form>
+                    </li>
                 <% }); %>
                 </ul>
                 

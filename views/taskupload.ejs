@@ -72,6 +72,10 @@
                     
                 </form>
                 
+                <% if(grade !== false){ %>
+                    <label>Grade: <%= grade.grade %></label> <br>
+                    <p>Remarks: <%= grade.remarks %></p>
+                <% } %>
                 
                 
             </div>

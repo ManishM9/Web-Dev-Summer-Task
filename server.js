@@ -152,12 +152,28 @@ app.get("/task1", function(req, res) {
                     flag = true;
                 }
             });
-            if(flag){
-                // res.render("taskupload", {disp:"You have already uploaded the document, click <a href=\"/download\">here</a> to download."})
-                res.render("taskupload", {username: username,disp: true, tno:1});
-            } else {
-                res.render("taskupload", {username: username,disp: false, tno:1});
-            }
+            
+            db.ref("grades/Task1/"+username).once("value", function(snapshot) {
+                var val = snapshot.val();
+                var obj = {};
+                
+                if(val !== null){
+                    obj = {
+                        grade: val.Grade,
+                        remarks: val.Remarks
+                    };
+                } else {
+                    obj = false;
+                }
+                
+                if(flag){
+                    // res.render("taskupload", {disp:"You have already uploaded the document, click <a href=\"/download\">here</a> to download."})
+                    res.render("taskupload", {username: username,disp: true, tno:1, grade: obj});
+                } else {
+                    res.render("taskupload", {username: username,disp: false, tno:1, grade: obj});
+                }
+                
+            });
             
         });
         
@@ -172,15 +188,36 @@ app.get("/task1", function(req, res) {
             files.forEach(file =>{
                 var temp_name = file.name.split("/")[1];
                 if(temp_name !== undefined && temp_name !== ""){
-                    upload_details.push(temp_name);
+                    
+                    db.ref("/grades/Task1/"+temp_name.split("_")[0]).once("value", function(snapshot) {
+                        var val = snapshot.val();
+                        // console.log(val);
+                        
+                        if(val !== null){
+                            upload_details.push({
+                                file_name: temp_name,
+                                grade: val.Grade,
+                                remarks: val.Remarks
+                            });
+                        } else {
+                            upload_details.push({
+                                file_name: temp_name,
+                                grade: "NAN",
+                                remarks: "NAN"
+                            });
+                        }
+                    });
                 }
                 console.log(file.name);
                 
             });
             
-            // console.log(upload_details);
             
-            res.render("taskprogress", {upload_details:upload_details});
+            setTimeout(function(){
+                // console.log(upload_details);
+                res.render("taskprogress", {upload_details:upload_details});
+            }, 5000);
+            
             
         }).catch(err =>{
             if(err) throw err;
@@ -606,6 +643,40 @@ app.post("/pchange", function(req, res) {
     } else {
         res.redirect("/");
     }
+    
+});
+
+
+app.post("/grade/:taskno", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    var tno = req.params.taskno;
+    
+    if( username !== undefined && authorised === true && admin === true){
+        
+        if(tno === "task1"){
+            var username_given = reqb.username_given.split("_")[0];
+            var grade_given = reqb.grade_given;
+            var remarks = reqb.remarks;
+            
+            db.ref("grades/Task1/"+username_given).update({
+                Grade: grade_given,
+                Remarks: remarks
+            }).then(() =>{
+                res.redirect("/task1");
+            });
+            
+        }
+        
+    } else {
+        res.redirect("/");
+    }
+    
     
 });
 
