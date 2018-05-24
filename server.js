@@ -680,7 +680,39 @@ app.post("/grade/:taskno", function(req, res) {
     
 });
 
-
+app.post("/video_feedback/:vid", function(req, res) {
+    
+    var reqb = req.body;
+    var username = req.session.username;
+    var authorised = req.session.authorised;
+    var email = req.session.email;
+    var year = req.session.year;
+    var admin = req.session.admin;
+    var vid = req.params.vid;
+    
+    if(username !== undefined && authorised === true){
+        
+        db.ref("/feedback").once("value", function(snapshot) {
+            var val = snapshot.val();
+            
+            if(val === null){
+                val = [];
+            }
+            val.push({feedback: reqb.feedback, username: username});
+            
+            db.ref("/feedback").set(val).then(() =>{
+                res.send(true);
+            }, () =>{
+                res.send(false);
+            });
+            
+        });
+        
+    } else {
+        res.redirect("/");
+    }
+    
+});
 
 
 app.get("/logout", function(req, res) {

@@ -19,6 +19,8 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    
     <style>
         @font-face{
             font-family: "Rayando";
@@ -83,6 +85,12 @@
                     <h3>Videos:</h3>
                     <iframe src="https://youtube.com/embed/lTY6kGlgtb8" height="500px" width="100%"></iframe>
                 </div>
+                
+                <form id="feedback" method="POST">
+                    <textarea rows=5 cols=100 id="textarea"></textarea><br/>
+                    <input type="submit" value="Send Feedback">
+                    
+                </form>
                     
                 <div style="width:100%; height:500px;">
                     <center><img src="https://upload.wikimedia.org/wikipedia/commons/8/80/Comingsoon.png"></center>
@@ -93,7 +101,26 @@
         </div>
         
         
-        
+        <script>
+            
+            $(document).ready(function(){
+                
+                $("#feedback").submit(function(e){
+                    e.preventDefault();
+                    
+                    $.post("/video_feedback/html", {feedback: $("#textarea").val()}, function(data, status){
+                        if(data === true){
+                            alert("Submitted");
+                        } else {
+                            alert("Submission Error");
+                        }
+                    });
+                    
+                });
+                
+            });
+            
+        </script>
         
     </body>
     
